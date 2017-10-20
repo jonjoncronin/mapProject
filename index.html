@@ -56,11 +56,27 @@
                  class="w3-container w3-col s12 m12 l10">
                 <section id="targetContent"
                          class="w3-left">
-                    <div data-bind="text: currentFilter"></div>
+                    <div class="w3-container" id="map"></div>
+                    <script>
+     var map;
+     function initMap() {
+       // TODO: use a constructor to create a new map JS object. You can use the coordinates
+       // we used, 40.7413549, -73.99802439999996 or your own!
+       map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 38.8118916, lng: -121.2801757},
+          zoom: 12
+       });
+     }
+   </script>
+                    <!--TODO: Load the JS API ASYNCHRONOUSLY below.-->
+                    <script async defer
+                               src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w&callback=initMap">
+                    </script>
                 </section>
             </div>
         </div>
     </main>
+
     <script src="js/lib/knockout-3.4.2.js"></script>
     <script src="app/app.js"></script>
     <script>
@@ -75,6 +91,7 @@
             }
         }
     </script>
+
 </body>
 
 </html>

@@ -9,6 +9,7 @@ body {
    font-family: "Comfortaa", cursive;
    background-color: white;
    margin: 0;
+   padding: 0;
 }
 
 .relaxed {
@@ -71,7 +72,19 @@ button.accordion.active:before {
 }
 
 #targetContent {
-  width: 90%;
+  overflow: hidden;
+  padding-bottom: 140%;
+  position: relative;
+  height: 100%;
+  width: 100%
+}
+
+#map {
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
 
 #headerMenuToggle {
@@ -92,5 +105,13 @@ button.accordion.active:before {
   #pageGuts {
     margin-left: 17%;
     transition: 0.4s;
+  }
+
+  #targetContent {
+    overflow: hidden;
+    padding-bottom: 75%;
+    position: relative;
+    height: 100%;
+    width: 100%
   }
 }
