@@ -43,27 +43,20 @@
                 <button class="w3-bar-item w3-button w3-hide-large relaxed"
                         onclick="toggleMenu()">Close &times;
                 </button>
-                <select class="w3-select" id="filter_select" name="filter">
-                  <option value="1">filter 1</option>
-                  <option value="2">filter 2</option>
-                  <option value="3">filter 3</option>
-                  <option value="4">filter 4</option>
-                  <option value="5">filter 5</option>
+                <select class="w3-select" name="filter" data-bind="options: filterList, selectedOptions: currentFilter">
                 </select>
-                <a href="#"
-                   class="w3-bar-item w3-button relaxed">location</a>
-                <a href="#"
-                   class="w3-bar-item w3-button relaxed">location</a>
-                <a href="#"
-                   class="w3-bar-item w3-button relaxed">location</a>
-                <a href="#"
-                   class="w3-bar-item w3-button relaxed">location</a>
+                <div>
+                    <a href="#"
+                       class="w3-bar-item w3-button relaxed"
+                       ></a>
+               </div>
             </nav>
             <!-- Main -->
             <div id="pageGuts"
                  class="w3-container w3-col s12 m12 l10">
                 <section id="targetContent"
                          class="w3-left">
+                    <div data-bind="text: currentFilter"></div>
                 </section>
             </div>
         </div>

@@ -12,12 +12,28 @@
 /**
 * Model Definitions
 **/
+var filters = ['All Locations',
+               'Golf Courses',
+               'Donuts',
+               'Breweries',
+               'Mexican Restaurants',
+               'Parks'];
+
 
 /**
 * ViewModel definitions
 **/
 var ViewModel = function () {
   var self = this;
+
+  this.filterList = ko.observableArray([]);
+
+  filters.forEach(function(filter) {
+    self.filterList.push(filter);
+  });
+
+  this.currentFilter = ko.observable( this.filterList()[0] );
+  this.locationList = ko.observableArray([]);
 };
 
 /*
