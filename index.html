@@ -32,7 +32,7 @@
                 </div>
                 <h3>
                   <a href="#"
-                     class="w3-button w3-hover-blue-gray relaxed">Neighboorhood APP</a>
+                     class="w3-button w3-hover-blue-gray relaxed">Neighborhood APP</a>
                 </h3>
             </div>
         </header>
@@ -43,12 +43,13 @@
                 <button class="w3-bar-item w3-button w3-hide-large relaxed"
                         onclick="toggleMenu()">Close &times;
                 </button>
-                <select class="w3-select" name="filter" data-bind="options: filterList, selectedOptions: currentFilter">
+                <select class="w3-select" name="filter" data-bind="options: filterList, value: selectedFilter">
                 </select>
-                <div>
+                <div data-bind="foreach: locationList">
                     <a href="#"
                        class="w3-bar-item w3-button relaxed"
-                       ></a>
+                       data-bind="text: $data">
+                    </a>
                </div>
             </nav>
             <!-- Main -->
@@ -57,21 +58,6 @@
                 <section id="targetContent"
                          class="w3-left">
                     <div class="w3-container" id="map"></div>
-                    <script>
-     var map;
-     function initMap() {
-       // TODO: use a constructor to create a new map JS object. You can use the coordinates
-       // we used, 40.7413549, -73.99802439999996 or your own!
-       map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 38.8118916, lng: -121.2801757},
-          zoom: 12
-       });
-     }
-   </script>
-                    <!--TODO: Load the JS API ASYNCHRONOUSLY below.-->
-                    <script async defer
-                               src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w&callback=initMap">
-                    </script>
                 </section>
             </div>
         </div>
@@ -79,6 +65,10 @@
 
     <script src="js/lib/knockout-3.4.2.js"></script>
     <script src="app/app.js"></script>
+    <!--TODO: Load the JS API ASYNCHRONOUSLY below.-->
+    <script async defer
+         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w&callback=initMap">
+    </script>
     <script>
         function toggleMenu() {
             var panel = document.getElementById("sideMenu");
