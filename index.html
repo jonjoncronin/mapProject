@@ -48,7 +48,7 @@
                 <div data-bind="foreach: locationList">
                     <a href="#"
                        class="w3-bar-item w3-button relaxed"
-                       data-bind="text: $data">
+                       data-bind="text: name, attr: {href: url}">
                     </a>
                </div>
             </nav>
@@ -67,7 +67,7 @@
     <script src="app/app.js"></script>
     <!--TODO: Load the JS API ASYNCHRONOUSLY below.-->
     <script async defer
-         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w&callback=initMap">
+         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w&libraries=places&callback=initMap">
     </script>
     <script>
         function toggleMenu() {
