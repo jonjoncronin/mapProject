@@ -106,10 +106,25 @@ ko.applyBindings(new ViewModel());
 * Google Maps work
 **/
 var map;
-function initMap() {
-  // create a map centered on Rocklin, CA
-  map = new google.maps.Map(document.getElementById('map'), {
-     center: {lat: 38.8118916, lng: -121.2801757},
-     zoom: 12
+var defaultMapCenter = "Rocklin, CA";
+
+function geocodeBaseCity(address, map) {
+  var geocoder = new google.maps.Geocoder();
+  var latLong;
+  geocoder.geocode({'address': defaultMapCenter}, function(results, status) {
+    if (status == 'OK') {
+      latLong = results[0].geometry.location;
+      map.setCenter(latLong);
+    }
   });
+};
+
+function initMap() {
+  var mapOptions = {
+    zoom: 12,
+    center: {lat: 0, lng: 0}
+  };
+  map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  geocodeBaseCity(defaultMapCenter, map);
+  populateLocations(filters);
 };
