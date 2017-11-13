@@ -6,7 +6,6 @@
 * third-party data about those locations and various ways to browse the content.
 * @author Jon Cronin
 **/
-
 "use strict";
 
 /**
@@ -20,6 +19,9 @@ var filters = ['All Locations',
                'Parks'];
 var locations = [];
 var placeMarkers = [];
+var map;
+// expected latLong for Rocklin is lat: 38.7907339, long: -121.23578279999998
+var defaultMapCenter = "Rocklin, CA";
 
 function getLocations(someFilter) {
   console.log("Filter All locations for " + someFilter);
@@ -36,6 +38,20 @@ function getLocations(someFilter) {
   return filtered;
 };
 
+function clearAllMarkersFromView() {
+  locations.forEach(function(place) {
+    place.marker.setMap(null);
+  }, self);
+};
+
+function updateMarkerViewability(someFilter) {
+  locations.forEach(function(place) {
+    if(place.type == someFilter ||
+       someFilter == "All Locations") {
+      place.marker.setMap(map);
+    }
+  }, self);
+};
 /**
 * ViewModel definitions
 **/
@@ -49,6 +65,8 @@ var ViewModel = function () {
     console.log("Updating viewable places")
     var list = getLocations(this.selectedFilter());
     self.viewablePlaces(list);
+    clearAllMarkersFromView();
+    updateMarkerViewability(this.selectedFilter());
   }, self);
 };
 
@@ -61,10 +79,6 @@ ko.applyBindings(myModel);
 /*
 * Google Maps work
 **/
-var map;
-// expected latLong for Rocklin is lat: 38.7907339, long: -121.23578279999998
-var defaultMapCenter = "Rocklin, CA";
-
 // This function takes in a COLOR, and then creates a new marker
 // icon of that color. The icon will be 21 px wide by 34 high, have an origin
 // of 0, 0 and be anchored at 10, 34).
@@ -100,10 +114,6 @@ function populateLocationsAndMarkers(map) {
             break;
           }
           // console.log(results[ii]);
-          // take the result and store it in the all locations array
-          var locObj = {type: filter,
-                        place: results[ii]};
-                        locations.push(locObj);
 
           var largeInfowindow = new google.maps.InfoWindow();
           // Style the markers a bit. This will be our listing marker icon.
@@ -142,8 +152,7 @@ function populateLocationsAndMarkers(map) {
             animation: google.maps.Animation.DROP,
             id: (locations.length - 1)
           });
-          // Push the marker to our array of markers.
-          placeMarkers.push(marker);
+
           // Create an onclick event to open an infowindow at each marker.
           marker.addListener('click', function() {
             populateInfoWindow(this, largeInfowindow);
@@ -156,6 +165,12 @@ function populateLocationsAndMarkers(map) {
           marker.addListener('mouseout', function() {
             this.setIcon(defaultIcon);
           });
+          // Push the marker to our array of markers.
+          // take the result and store it in the all locations array
+          var locObj = {type: filter,
+                        place: results[ii],
+                        marker: marker};
+          locations.push(locObj);
         }
       }
       else {
