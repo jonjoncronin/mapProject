@@ -45,10 +45,10 @@
                 </button>
                 <select class="w3-select" name="filter" data-bind="options: filterList, value: selectedFilter">
                 </select>
-                <div data-bind="foreach: locationList">
+                <div data-bind="foreach: viewablePlaces">
                     <a href="#"
                        class="w3-bar-item w3-button relaxed"
-                       data-bind="text: name, attr: {href: url}">
+                       data-bind="text: place.name">
                     </a>
                </div>
             </nav>
@@ -62,13 +62,14 @@
             </div>
         </div>
     </main>
-
-    <script src="js/lib/knockout-3.4.2.js"></script>
-    <script src="app/app.js"></script>
     <!--TODO: Load the JS API ASYNCHRONOUSLY below.-->
     <script async defer
          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w&libraries=places&callback=initMap">
     </script>
+
+    <script src="js/lib/knockout-3.4.2.js"></script>
+    <script src="app/app.js"></script>
+
     <script>
         function toggleMenu() {
             var panel = document.getElementById("sideMenu");

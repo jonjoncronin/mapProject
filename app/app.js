@@ -18,37 +18,22 @@ var filters = ['All Locations',
                'Breweries',
                'Mexican Restaurants',
                'Parks'];
-
-var golfLocations = [];
-var donutLocations = [];
-var brewLocations = [];
-var mexicanLocations = [];
-var parkLocations = [];
-var allLocations = []
-var locations;
+var locations = [];
+var placeMarkers = [];
 
 function getLocations(someFilter) {
-  switch(someFilter){
-    case "Golf Courses":
-      return golfLocations;
-    break;
-    case "Donuts":
-      return donutLocations;
-    break;
-    case "Breweries":
-      return brewLocations;
-    break;
-    case "Mexican Restaurants":
-      return mexicanLocations;
-    break;
-    case "Parks":
-      return parkLocations;
-    break;
-    default:
-      return allLocations;
-    break;
+  console.log("Filter All locations for " + someFilter);
+  var filtered;
+  if(someFilter == "All Locations") {
+    filtered = locations;
   }
-  return [];
+  else {
+    filtered = locations.filter(function(local) {
+      return local.type == someFilter;
+    });
+  }
+  console.log(filtered);
+  return filtered;
 };
 
 /**
@@ -57,26 +42,21 @@ function getLocations(someFilter) {
 var ViewModel = function () {
   var self = this;
 
-  self.filterList = ko.observableArray([]);
-
-  filters.forEach(function(filter) {
-    self.filterList.push(filter);
-  });
-
+  self.filterList = ko.observableArray(filters);
   self.selectedFilter = ko.observable( self.filterList()[0] );
-
-  self.locationList = ko.computed(function () {
-    console.log("Changing locations list for - ");
-    console.log(this.selectedFilter());
-    return getLocations(this.selectedFilter());
+  self.viewablePlaces = ko.observableArray([]);
+  self.updatePlaces = ko.computed(function() {
+    console.log("Updating viewable places")
+    var list = getLocations(this.selectedFilter());
+    self.viewablePlaces(list);
   }, self);
-
 };
 
 /*
 * Activate Knockout for the Application
 **/
-ko.applyBindings(new ViewModel());
+var myModel = new ViewModel();
+ko.applyBindings(myModel);
 
 /*
 * Google Maps work
@@ -85,7 +65,7 @@ var map;
 // expected latLong for Rocklin is lat: 38.7907339, long: -121.23578279999998
 var defaultMapCenter = "Rocklin, CA";
 
-function populateLocations(map) {
+function populateLocationsAndMarkers(map) {
   filters.forEach(function(filter) {
     if(filter == "All Locations") {
       return;
@@ -105,35 +85,31 @@ function populateLocations(map) {
             // only handle at most the first 5 entries
             break;
           }
-          console.log(results[ii]);
-          // take the result and store it in the applicable location array
-          var locObj = {name: results[ii].name,
-                        url: 'http://example.com'};
-          switch(filter) {
-            case "Golf Courses":
-              golfLocations.push(locObj);
-            break;
-            case "Donuts":
-              donutLocations.push(locObj);
-            break;
-            case "Breweries":
-              brewLocations.push(locObj);
-            break;
-            case "Mexican Restaurants":
-              mexicanLocations.push(locObj);
-            break;
-            case "Parks":
-              parkLocations.push(locObj);
-            break;
-            default:
-            break;
-          }
+          // console.log(results[ii]);
+          // take the result and store it in the all locations array
+          var locObj = {type: filter,
+                        place: results[ii]};
+                        locations.push(locObj);
+
+          var largeInfowindow = new google.maps.InfoWindow();
+          // Get the position from the location array.
+          var position = results[ii].geometry.location;
+          var title = results[ii].name;
+          // Create a marker per location, and put into markers array.
+          var marker = new google.maps.Marker({
+            map: map,
+            position: position,
+            title: title,
+            animation: google.maps.Animation.DROP,
+            id: locations.length
+          });
+          // Push the marker to our array of markers.
+          placeMarkers.push(marker);
+          // Create an onclick event to open an infowindow at each marker.
+          marker.addListener('click', function() {
+            populateInfoWindow(this, largeInfowindow);
+          });
         }
-        // now populate all locations array
-        allLocations = golfLocations.concat(donutLocations,
-                                            brewLocations,
-                                            mexicanLocations,
-                                            parkLocations);
       }
       else {
         console.log("Places API call didn't like you");
@@ -154,6 +130,24 @@ function geocodeBaseCity(address, map) {
   });
 };
 
+// This function populates the infowindow when the marker is clicked. We'll only allow
+// one infowindow which will open at the marker that is clicked, and populate based
+// on that markers position.
+function populateInfoWindow(marker, infowindow) {
+  // Check to make sure the infowindow is not already opened on this marker.
+  if (infowindow.marker != marker) {
+    infowindow.marker = marker;
+    infowindow.setContent('<div>' + marker.title + '</div>');
+    infowindow.open(map, marker);
+    // Make sure the marker property is cleared if the infowindow is closed.
+    infowindow.addListener('closeclick',function(){
+      infowindow.setMarker = null;
+    });
+  }
+}
+
+// Initialize the google map.
+// Set the center to Rocklin
 function initMap() {
   var mapOptions = {
     zoom: 12,
@@ -161,5 +155,5 @@ function initMap() {
   };
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   geocodeBaseCity(defaultMapCenter, map);
-  populateLocations(map);
+  populateLocationsAndMarkers(map);
 };
