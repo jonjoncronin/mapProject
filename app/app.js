@@ -52,6 +52,7 @@ function updateMarkerViewability(someFilter) {
     }
   }, self);
 };
+
 /**
 * ViewModel definitions
 **/
@@ -59,8 +60,9 @@ var ViewModel = function () {
   var self = this;
 
   self.filterList = ko.observableArray(filters);
-  self.selectedFilter = ko.observable( self.filterList()[0] );
-  self.viewablePlaces = ko.observableArray([]);
+  // self.selectedFilter = ko.observable( self.filterList()[0] );
+  self.selectedFilter = ko.observable();
+  self.viewablePlaces = ko.observableArray();
   self.updatePlaces = ko.computed(function() {
     console.log("Updating viewable places")
     var list = getLocations(this.selectedFilter());
@@ -124,6 +126,13 @@ function populateLocationsAndMarkers(map) {
             break;
           }
           // console.log(results[ii]);
+          // check to see if the place already exists in the locations array
+          if(locations.find(function(currentValue) {
+            return currentValue.place.name == this;
+          },results[ii].name)) {
+            console.log(results[ii].name + " already exists in locations");
+            continue;
+          }
 
           var largeInfowindow = new google.maps.InfoWindow();
           // Style the markers a bit. This will be our listing marker icon.
@@ -153,7 +162,7 @@ function populateLocationsAndMarkers(map) {
           // Get the position from the location array.
           var position = results[ii].geometry.location;
           var title = results[ii].name;
-          // Create a marker per location, and put into markers array.
+          // Create a marker per location, and put into markers array
           var marker = new google.maps.Marker({
             map: map,
             position: position,
@@ -175,6 +184,7 @@ function populateLocationsAndMarkers(map) {
           marker.addListener('mouseout', function() {
             this.setIcon(defaultIcon);
           });
+
           // Push the marker to our array of markers.
           // take the result and store it in the all locations array
           var locObj = {type: filter,
@@ -182,6 +192,7 @@ function populateLocationsAndMarkers(map) {
                         marker: marker};
           locations.push(locObj);
         }
+        myModel.viewablePlaces(locations);
       }
       else {
         console.log("Places API call didn't like you");
@@ -229,3 +240,8 @@ function initMap() {
   geocodeBaseCity(defaultMapCenter, map);
   populateLocationsAndMarkers(map);
 };
+
+function handleGoogleError() {
+  // update the map div with content that indicates an error ocurred
+  console.log("Google maps API call failed");
+}
