@@ -68,6 +68,16 @@ var ViewModel = function () {
     clearAllMarkersFromView();
     updateMarkerViewability(this.selectedFilter());
   }, self);
+  // self.selectedPlace = ko.observable(self.viewablePlaces()[0]);
+  self.toggleMarkerWindow = function (object) {
+    //clear other windows
+    console.log("clicking")
+    console.log(object.place.name)
+    console.log(object);
+    google.maps.event.trigger(object.marker, 'click');
+    // google.maps.event.trigger(object.marker, 'click');
+    // var name = object.text;
+  };
 };
 
 /*

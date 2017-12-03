@@ -48,7 +48,7 @@
                 <div data-bind="foreach: viewablePlaces">
                     <a href="#"
                        class="w3-bar-item w3-button relaxed"
-                       data-bind="text: place.name">
+                       data-bind="text: place.name, click: $root.toggleMarkerWindow">
                     </a>
                </div>
             </nav>
@@ -63,13 +63,11 @@
         </div>
     </main>
     <!--TODO: Load the JS API ASYNCHRONOUSLY below.-->
-    <script async defer
-         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w&libraries=places&callback=initMap">
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w&libraries=places&callback=initMap">
     </script>
-
     <script src="js/lib/knockout-3.4.2.js"></script>
-    <script src="app/app.js"></script>
-
+    <script async src="app/app.js"></script>
     <script>
         function toggleMenu() {
             var panel = document.getElementById("sideMenu");
