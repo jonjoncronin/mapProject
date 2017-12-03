@@ -118,7 +118,7 @@ function populateLocationsAndMarkers(map) {
     var service = new google.maps.places.PlacesService(map);
     service.nearbySearch(request, function(results,status) {
       if(status == 'OK') {
-        console.log("Places API call worked");
+        console.log("INFO: Places API succeeded for " + filter);
         for(var ii = 0;ii<results.length;ii++)
         {
           if(ii>4) {
@@ -130,7 +130,7 @@ function populateLocationsAndMarkers(map) {
           if(locations.find(function(currentValue) {
             return currentValue.place.name == this;
           },results[ii].name)) {
-            console.log(results[ii].name + " already exists in locations");
+            console.log("WARN: " + results[ii].name + " already exists in locations");
             continue;
           }
 
@@ -195,7 +195,7 @@ function populateLocationsAndMarkers(map) {
         myModel.viewablePlaces(locations);
       }
       else {
-        console.log("Places API call didn't like you");
+        console.log("ERR: Places API call for " + filter + " filter");
         console.log(status);
       }
     });
@@ -224,9 +224,14 @@ function populateInfoWindow(marker, infowindow) {
     infowindow.open(map, marker);
     // Make sure the marker property is cleared if the infowindow is closed.
     infowindow.addListener('closeclick',function(){
-      infowindow.setMarker = null;
+      infowindow.marker = null;
     });
   }
+  else {
+    console.log("WARN: " + marker.title + " InfoWindow already opened");
+
+  }
+
 }
 
 // Initialize the google map.
@@ -243,5 +248,5 @@ function initMap() {
 
 function handleGoogleError() {
   // update the map div with content that indicates an error ocurred
-  console.log("Google maps API call failed");
+  console.log("ERR: Google maps API call failed");
 }
