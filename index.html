@@ -2,85 +2,85 @@
 <html>
 
 <head>
-    <title>Neighborhood App</title>
-    <meta charset="utf-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1" />
-    <link href="https://fonts.googleapis.com/css?family=Comfortaa"
-          rel="stylesheet">
-    <link href="https://www.w3schools.com/w3css/4/w3.css"
-          rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-          rel="stylesheet">
-    <link rel="stylesheet"
-          href="css/main.css" />
+  <title>Neighborhood App</title>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css?family=Comfortaa"
+        rel="stylesheet">
+  <link href="https://www.w3schools.com/w3css/4/w3.css"
+        rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        rel="stylesheet">
+  <link rel="stylesheet"
+        href="css/main.css" />
 </head>
 
 <body>
-    <main>
-        <header id="header"
-                class="w3-container w3-row w3-blue-gray">
-            <div id="headerBlock"
-                 class="w3-container w3-col s10 m10 l10 w3-left">
-                <div id="headerMenuToggle"
-                     class="w3-animate-opacity w3-left w3-hide-large">
-                    <button id="menuToggleButton"
-                            class="w3-button w3-large relaxed"
-                            onclick="toggleMenu()">
-                         &#9776;
-                     </button>
-                </div>
-                <h3>
-                  <a href="#"
-                     class="w3-button w3-hover-blue-gray relaxed">Neighborhood APP</a>
-                </h3>
-            </div>
-        </header>
-        <div id="pageContent"
-             class="w3-container w3-row w3-white w3-border-top w3-border-white">
-            <nav id="sideMenu"
-                 class="w3-sidebar w3-bar-block w3-collapse w3-card-2 w3-col s11 m11 l2 w3-bar-block w3-light-gray">
-                <button class="w3-bar-item w3-button w3-hide-large relaxed"
-                        onclick="toggleMenu()">Close &times;
-                </button>
-                <select class="w3-select" name="filter" data-bind="options: filterList, value: selectedFilter">
-                </select>
-                <div data-bind="foreach: viewablePlaces">
-                    <a href="#"
-                       class="w3-bar-item w3-button relaxed"
-                       data-bind="text: place.name, click: $root.toggleMarkerWindow">
-                    </a>
-               </div>
-            </nav>
-            <!-- Main -->
-            <div id="pageGuts"
-                 class="w3-container w3-col s12 m12 l10">
-                <section id="targetContent"
-                         class="w3-left">
-                    <div class="w3-container" id="map"></div>
-                </section>
-            </div>
+  <main>
+    <header id="header"
+            class="w3-container w3-row w3-blue-gray">
+      <div id="headerBlock"
+           class="w3-container w3-col s10 m10 l10 w3-left">
+        <div id="headerMenuToggle"
+             class="w3-animate-opacity w3-left w3-hide-large">
+          <button id="menuToggleButton"
+                  class="w3-button w3-large relaxed"
+                  onclick="toggleMenu()">
+            &#9776;
+          </button>
         </div>
-    </main>
-    <!--TODO: Load the JS API ASYNCHRONOUSLY below.-->
-    <script async
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w&libraries=places&callback=initMap"
-        onerror="handleGoogleError()">
-    </script>
-    <script src="js/lib/knockout-3.4.2.js"></script>
-    <script async src="app/app.js"></script>
-    <script>
-        function toggleMenu() {
-            var panel = document.getElementById("sideMenu");
-            if (panel.style.display == "block") {
-                panel.style.display = "none";
-                panel.className = panel.className.replace(" w3-animate-left", "")
-            } else {
-                panel.className += " w3-animate-left"
-                panel.style.display = "block";
-            }
-        }
-    </script>
+        <h3>
+          <a href="#"
+             class="w3-button w3-hover-blue-gray relaxed">Neighborhood APP</a>
+        </h3>
+      </div>
+    </header>
+    <div id="pageContent"
+         class="w3-container w3-row w3-white w3-border-top w3-border-white">
+      <nav id="sideMenu"
+           class="w3-sidebar w3-bar-block w3-collapse w3-card-2 w3-col s11 m11 l2 w3-bar-block w3-light-gray">
+        <button class="w3-bar-item w3-button w3-hide-large relaxed"
+                onclick="toggleMenu()">Close &times;
+        </button>
+        <select class="w3-select" name="filter" data-bind="options: filterList, value: selectedFilter">
+        </select>
+        <div data-bind="foreach: viewablePlaces">
+          <a href="#"
+             class="w3-bar-item w3-button relaxed"
+             data-bind="text: place.name, click: $root.toggleMarkerWindow">
+          </a>
+        </div>
+      </nav>
+      <!-- Main -->
+      <div id="pageGuts"
+           class="w3-container w3-col s12 m12 l10">
+        <section id="targetContent"
+                 class="w3-left">
+          <div class="w3-container" id="map"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <!--TODO: Load the JS API ASYNCHRONOUSLY below.-->
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w&libraries=places&callback=initMap"
+    onerror="handleGoogleError()">
+  </script>
+  <script src="js/lib/knockout-3.4.2.js"></script>
+  <script async src="app/app.js"></script>
+  <script>
+    function toggleMenu() {
+      var panel = document.getElementById("sideMenu");
+      if (panel.style.display == "block") {
+        panel.style.display = "none";
+        panel.className = panel.className.replace(" w3-animate-left", "")
+      } else {
+        panel.className += " w3-animate-left"
+        panel.style.display = "block";
+      }
+    }
+  </script>
 
 </body>
 

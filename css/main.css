@@ -6,43 +6,43 @@
  *********************************************************/
 
 body {
-   font-family: "Comfortaa", cursive;
-   background-color: white;
-   margin: 0;
-   padding: 0;
+  font-family: "Comfortaa", cursive;
+  background-color: white;
+  margin: 0;
+  padding: 0;
 }
 
 .relaxed {
-    transition: 0.4s;
+  transition: 0.4s;
 }
 
 button.accordion {
-   background-color: #eee;
-   color: #444;
-   cursor: pointer;
-   /*padding: 18px;*/
-   border: none;
-   text-align: left;
-   outline: none;
-   width: 70%;
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  /*padding: 18px;*/
+  border: none;
+  text-align: left;
+  outline: none;
+  width: 70%;
 }
 
 button.accordion.active, button.accordion:hover {
-   background-color: #ddd;
+  background-color: #ddd;
 }
 
 button.accordion:before {
-   content: '\02795';
-   /* Unicode character for "plus" sign (+) */
-   font-size: 13px;
-   color: #777;
-   float: left;
-   margin-right: 5px;
+  content: '\02795';
+  /* Unicode character for "plus" sign (+) */
+  font-size: 13px;
+  color: #777;
+  float: left;
+  margin-right: 5px;
 }
 
 button.accordion.active:before {
-   content: "\2796";
-   /* Unicode character for "minus" sign (-) */
+  content: "\2796";
+  /* Unicode character for "minus" sign (-) */
 }
 
 .accordion-guts {
@@ -96,6 +96,7 @@ button.accordion.active:before {
   margin: auto;
   text-align: center
 }
+
 #pageGuts {
   margin-left: 0;
   transition: 0.4s;
@@ -106,7 +107,6 @@ button.accordion.active:before {
     margin-left: 17%;
     transition: 0.4s;
   }
-
   #targetContent {
     overflow: hidden;
     padding-bottom: 75%;
