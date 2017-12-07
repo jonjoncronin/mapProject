@@ -8,8 +8,19 @@
  */
 "use strict";
 
+/**
+ * locations Array is an array of custom objects that maintains the list
+ * of locations that will be retrieved from the Google Places API.
+ * These locations/Places will then be used to populate a menu as well as their
+ * associated Google Markers that will be displayed on the map.
+ * Objects in the locations array look like this -
+ * {type: String that matches one of the filters from the filterList,
+ *  place: Google Place that is retrieved by a Google Places nearbySearch,
+ *  marker: Google Marker associated with the Place on the map
+ * }
+ * @type {Array}
+ */
 var locations = [];
-var placeMarkers = [];
 var map;
 
 // expected latLong for Rocklin is lat: 38.7907339, long: -121.23578279999998
@@ -93,10 +104,12 @@ function makeMarkerIcon(markerColor) {
  *                               this app.
  */
 function populateLocationsAndMarkers(map) {
+  var largeInfowindow = new google.maps.InfoWindow();
   filters.forEach(function(filter) {
     if (filter == "All Locations") {
       return;
     }
+
     var request = {
       location: {
         lat: 38.7907339,
@@ -105,6 +118,8 @@ function populateLocationsAndMarkers(map) {
       radius: '8000',
       keyword: filter
     };
+    // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=38.7907339,-121.23578279999998&radius=8000&keyword=Golf%20Course,Donuts,Parks&key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w
+
     var service = new google.maps.places.PlacesService(map);
     service.nearbySearch(request, function(results, status) {
       if (status == 'OK') {
@@ -124,7 +139,6 @@ function populateLocationsAndMarkers(map) {
             continue;
           }
 
-          var largeInfowindow = new google.maps.InfoWindow();
           // Style the markers a bit. This will be our listing marker icon.
           var defaultIcon;
           switch (filter) {
@@ -186,7 +200,7 @@ function populateLocationsAndMarkers(map) {
         }
         myModel.viewablePlaces(locations);
       } else {
-        console.log("ERR: Places API call for " + filter + " filter");
+        console.log("ERR: Places API call failed for " + filter + " filter");
         console.log(status);
       }
     });
