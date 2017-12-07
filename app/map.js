@@ -224,11 +224,22 @@ function geocodeBaseCity(address, map) {
  *                                             or closing.
  */
 function populateInfoWindow(marker, infowindow) {
+  // handle animation of marker on click
+  if (marker.getAnimation() !== null) {
+    marker.setAnimation(null);
+  }
+  else {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function() {
+      marker.setAnimation(null);
+    },1400);
+  }
   // Check to make sure the infowindow is not already opened on this marker.
   if (infowindow.marker != marker) {
     infowindow.marker = marker;
     infowindow.setContent('<div>' + marker.title + '</div>');
     infowindow.open(map, marker);
+
     // Make sure the marker property is cleared if the infowindow is closed.
     infowindow.addListener('closeclick', function() {
       infowindow.marker = null;
@@ -253,6 +264,8 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   geocodeBaseCity(defaultMapCenter, map);
   populateLocationsAndMarkers(map);
+  //TODO - Add a function that goes to the Foursquare API and gets the pic
+  //populateLocationsWithPics()
 };
 
 /**
