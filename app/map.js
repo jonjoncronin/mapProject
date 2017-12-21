@@ -18,7 +18,13 @@
  *  place: Google Place that is retrieved by a Google Places nearbySearch,
  *  marker: Google Marker associated with the Place on the map
  * }
- * @type {Array}
+ * @type {Array} of custom "location" objects
+ *               location = {type: filter from filters Array,
+                             place: Google Location,
+                             marker: Google Marker,
+                             displayContent: HTML content in the form of
+                                             '<div>' + title + '</div>'
+                            }
  */
 var locations = [];
 var map;
@@ -94,6 +100,69 @@ function makeMarkerIcon(markerColor) {
   return markerImage;
 }
 
+function updateLocationWithImg(someTitle,someImgUrl) {
+  if(!someImgUrl) {
+    return;
+  }
+  var idx = locations.findIndex(function(local) {
+    return local.place.name == someTitle;
+  });
+  if(idx) {
+    locations[idx].displayContent = '<div><h3>' + someTitle + '</h3>' +
+                                    '<img src="' + someImgUrl + '">' + '</div>';
+  }
+  console.log(locations[idx].displayContent);
+}
+
+function makeFourSquareImg(latLong, title) {
+  var foursquare_client_id = "XSB01FC3WW2BE1VJQTTDNI2GS04HTFTG5OVKWJC5BNDEJWC5";
+  var foursquare_client_secret = "HJUFYYZCGR00V3IA34BT2NPYPJKRMQWKXSJUUDSMTN5X1HA3";
+  var llString = latLong.toUrlValue();
+  var foursquare_url = "https://api.foursquare.com/v2/venues/search?" +
+                       "&client_id=" +
+                       foursquare_client_id +
+                       "&client_secret=" +
+                       foursquare_client_secret +
+                       "&ll=" +
+                       llString +
+                       "&v=20171218&limit=1";
+  console.log("INFO: Making FourSquare requests for " + title);
+  console.log(foursquare_url);
+
+  $.getJSON(foursquare_url,function(venueData) {
+    if(venueData.meta.code != '200') {
+      console.log("ERROR: FourSquare failed to get venue " + title);
+      return;
+    }
+    var locID = venueData.response.venues[0].id;
+    console.log("INFO: FourSquare got the location " + locID);
+    var photosUrl = "https://api.foursquare.com/v2/venues/" +
+                    locID +
+                    "/photos?" +
+                    "&client_id=" +
+                    foursquare_client_id +
+                    "&client_secret=" +
+                    foursquare_client_secret +
+                    "&v=20171218&limit=1";
+    $.getJSON(photosUrl, function(photoData) {
+      if(photoData.meta.code != '200') {
+        console.log("ERROR: FourSquare failed to get photo for venue " + title);
+        return;
+      }
+      console.log("INFO: FourSquare got the photo for " + locID);
+      console.log(photoData);
+      var imgUrl = "";
+      if(photoData.response.photos.count != 0) {
+        imgUrl = photoData.response.photos.items[0].prefix +
+                 "100x100" +
+                 photoData.response.photos.items[0].suffix;
+      }
+      updateLocationWithImg(title,imgUrl);
+      console.log(imgUrl);
+    });
+  });
+
+}
 /**
  * populateLocationsAndMarkers -
  * A function that will populate the global locations array with objects that
@@ -138,24 +207,39 @@ function populateLocationsAndMarkers(map) {
                         " already exists in locations");
             continue;
           }
+          // Get the position from the location array.
+          var position = results[ii].geometry.location;
+          var title = results[ii].name;
 
-          // Style the markers a bit. This will be our listing marker icon.
+          // Style the markers a bit based on the filter.
+          // Also set the default displayContent.
           var defaultIcon;
+          var defaultDisplayContent;
           switch (filter) {
             case "Golf Courses":
               defaultIcon = makeMarkerIcon('000099');
+              defaultDisplayContent = '<div><h3>' + title + '</h3>' +
+                                      '<img style="width:100px" src="defaultPark.jpeg"></div>'
               break;
             case "Donuts":
               defaultIcon = makeMarkerIcon('ff4d94');
+              defaultDisplayContent = '<div><h3>' + title + '</h3>' +
+                                      '<img style="width:100px" src="defaultFood.png"></div>'
               break;
             case "Breweries":
               defaultIcon = makeMarkerIcon('663300');
+              defaultDisplayContent = '<div><h3>' + title + '</h3>' +
+                                      '<img style="width:100px" src="defaultFood.png"></div>'
               break;
             case "Mexican Restaurants":
               defaultIcon = makeMarkerIcon('ff9900');
+              defaultDisplayContent = '<div><h3>' + title + '</h3>' +
+                                      '<img style="width:100px" src="defaultFood.png"></div>'
               break;
             case "Parks":
               defaultIcon = makeMarkerIcon('33cc33');
+              defaultDisplayContent = '<div><h3>' + title + '</h3>' +
+                                      '<img style="width:100px" src="defaultPark.jpeg"></div>'
               break;
           }
 
@@ -163,9 +247,7 @@ function populateLocationsAndMarkers(map) {
           // mouses over the marker.
           var highlightedIcon = makeMarkerIcon('FFFF24');
 
-          // Get the position from the location array.
-          var position = results[ii].geometry.location;
-          var title = results[ii].name;
+
           // Create a marker per location, and put into markers array
           var marker = new google.maps.Marker({
             map: map,
@@ -194,9 +276,11 @@ function populateLocationsAndMarkers(map) {
           var locObj = {
             type: filter,
             place: results[ii],
-            marker: marker
+            marker: marker,
+            displayContent: defaultDisplayContent
           };
           locations.push(locObj);
+          makeFourSquareImg(position, title);
         }
         myModel.viewablePlaces(locations);
       } else {
@@ -251,7 +335,17 @@ function populateInfoWindow(marker, infowindow) {
   // Check to make sure the infowindow is not already opened on this marker.
   if (infowindow.marker != marker) {
     infowindow.marker = marker;
-    infowindow.setContent('<div>' + marker.title + '</div>');
+
+    var loc = locations.find(function(someLoc) {
+      return someLoc.place.name == marker.title;
+    });
+    if(loc) {
+      infowindow.setContent(loc.displayContent);
+    }
+    else {
+      infowindow.setContent('<div>' + marker.title + '</div>');
+    }
+
     infowindow.open(map, marker);
 
     // Make sure the marker property is cleared if the infowindow is closed.
