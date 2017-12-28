@@ -25,6 +25,48 @@ var filters = [
 ];
 
 /**
+ * locations Array is an array of custom objects that maintains the list
+ * of locations that will be retrieved from the Google Places API.
+ * These locations/Places will then be used to populate a menu as well as their
+ * associated Google Markers that will be displayed on the map.
+ * Objects in the locations array look like this -
+ * {type: String that matches one of the filters from the filterList,
+ *  place: Google Place that is retrieved by a Google Places nearbySearch,
+ *  marker: Google Marker associated with the Place on the map
+ * }
+ * @type {Array} of custom "location" objects
+ *               location = {type: filter from filters Array,
+                             place: Google Location,
+                             marker: Google Marker,
+                             displayContent: HTML content in the form of
+                                             '<div>' + title + '</div>'
+                            }
+ */
+var locations = [];
+
+/**
+ * getLocations -
+ * A function to return an array of filtered locations. The source array is the
+ * locations[] array defined above. It is expected that the caller will supply
+ * a valid filter.
+ * @param  {String} someFilter a string containing a filter value
+ * @return {Array} an Array of filtered locations
+ */
+function getLocations(someFilter) {
+  console.log("Filter All locations for " + someFilter);
+  var filtered;
+  if (someFilter == "All Locations") {
+    filtered = locations;
+  } else {
+    filtered = locations.filter(function(local) {
+      return local.type == someFilter;
+    });
+  }
+  console.log(filtered);
+  return filtered;
+}
+
+/**
  * The constructor for a custom ViewModel object that Knockout JS will manage.
  *
  * Obervables -

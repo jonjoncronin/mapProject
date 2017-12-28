@@ -8,51 +8,10 @@
  */
 "use strict";
 
-/**
- * locations Array is an array of custom objects that maintains the list
- * of locations that will be retrieved from the Google Places API.
- * These locations/Places will then be used to populate a menu as well as their
- * associated Google Markers that will be displayed on the map.
- * Objects in the locations array look like this -
- * {type: String that matches one of the filters from the filterList,
- *  place: Google Place that is retrieved by a Google Places nearbySearch,
- *  marker: Google Marker associated with the Place on the map
- * }
- * @type {Array} of custom "location" objects
- *               location = {type: filter from filters Array,
-                             place: Google Location,
-                             marker: Google Marker,
-                             displayContent: HTML content in the form of
-                                             '<div>' + title + '</div>'
-                            }
- */
-var locations = [];
 var map;
 
 // expected latLong for Rocklin is lat: 38.7907339, long: -121.23578279999998
 var defaultMapCenter = "Rocklin, CA";
-
-/**
- * getLocations -
- * A function to return an array of filtered locations. The source array is the
- * locations[] array defined above. It is expected that the caller will supply
- * a valid filter.
- * @param  {String} someFilter a string containing a filter value
- * @return {Array} an Array of filtered locations
- */
-function getLocations(someFilter) {
-  console.log("Filter All locations for " + someFilter);
-  var filtered;
-  if (someFilter == "All Locations") {
-    filtered = locations;
-  } else {
-    filtered = locations.filter(function(local) {
-      return local.type == someFilter;
-    });
-  }
-  console.log(filtered);
-  return filtered;
-}
 
 /**
  * clearAllMarkersFromView -
@@ -219,27 +178,27 @@ function populateLocationsAndMarkers(map) {
             case "Golf Courses":
               defaultIcon = makeMarkerIcon('000099');
               defaultDisplayContent = '<div><h3>' + title + '</h3>' +
-                                      '<img style="width:100px" src="defaultPark.jpeg"></div>'
+                                      '<img style="width:100px" src="media/defaultPark.jpeg"></div>'
               break;
             case "Donuts":
               defaultIcon = makeMarkerIcon('ff4d94');
               defaultDisplayContent = '<div><h3>' + title + '</h3>' +
-                                      '<img style="width:100px" src="defaultFood.png"></div>'
+                                      '<img style="width:100px" src="media/defaultFood.png"></div>'
               break;
             case "Breweries":
               defaultIcon = makeMarkerIcon('663300');
               defaultDisplayContent = '<div><h3>' + title + '</h3>' +
-                                      '<img style="width:100px" src="defaultFood.png"></div>'
+                                      '<img style="width:100px" src="media/defaultFood.png"></div>'
               break;
             case "Mexican Restaurants":
               defaultIcon = makeMarkerIcon('ff9900');
               defaultDisplayContent = '<div><h3>' + title + '</h3>' +
-                                      '<img style="width:100px" src="defaultFood.png"></div>'
+                                      '<img style="width:100px" src="media/defaultFood.png"></div>'
               break;
             case "Parks":
               defaultIcon = makeMarkerIcon('33cc33');
               defaultDisplayContent = '<div><h3>' + title + '</h3>' +
-                                      '<img style="width:100px" src="defaultPark.jpeg"></div>'
+                                      '<img style="width:100px" src="media/defaultPark.jpeg"></div>'
               break;
           }
 
@@ -372,8 +331,6 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   geocodeBaseCity(defaultMapCenter, map);
   populateLocationsAndMarkers(map);
-  //TODO - Add a function that goes to the Foursquare API and gets the pic
-  //populateLocationsWithPics()
 };
 
 /**
