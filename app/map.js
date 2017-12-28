@@ -68,7 +68,8 @@ function updateLocationWithImg(someTitle,someImgUrl) {
   });
   if(idx) {
     locations[idx].displayContent = '<div><h3>' + someTitle + '</h3>' +
-                                    '<img src="' + someImgUrl + '">' + '</div>';
+                                    '<img src="' + someImgUrl + '">' + '</div>' +
+                                    '<footer>foursquare image</footer>';
   }
   console.log(locations[idx].displayContent);
 }

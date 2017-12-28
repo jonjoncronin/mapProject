@@ -63,6 +63,11 @@ button.accordion.active:before {
   min-width: 320px;
 }
 
+#footer {
+  font-size: small;
+  font-weight: 900;
+}
+
 #loginStatus {
   clear: both;
 }
