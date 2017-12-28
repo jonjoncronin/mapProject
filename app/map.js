@@ -19,6 +19,7 @@ var defaultMapCenter = "Rocklin, CA";
  * clears the Google Marker from the Google Map.
  */
 function clearAllMarkersFromView() {
+  console.log("INFO: Clearing all markers from view");
   locations.forEach(function(place) {
     place.marker.setMap(null);
   }, self);
@@ -32,6 +33,7 @@ function clearAllMarkersFromView() {
  * @param  {String} someFilter a string containing a filter value.
  */
 function updateMarkerViewability(someFilter) {
+  console.log("INFO: setting markers for " + someFilter + " filter");
   locations.forEach(function(place) {
     if (place.type == someFilter || someFilter == "All Locations") {
       place.marker.setMap(map);
@@ -49,6 +51,7 @@ function updateMarkerViewability(someFilter) {
  *                                   input markerColor.
  */
 function makeMarkerIcon(markerColor) {
+  console.log("INFO: creating " + markerColor + " marker icon");
   var markerImage = new google.maps.MarkerImage(
       'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' +
       markerColor + '|40|_|%E2%80%A2',
@@ -61,6 +64,7 @@ function makeMarkerIcon(markerColor) {
 
 function updateLocationWithImg(someTitle,someImgUrl) {
   if(!someImgUrl) {
+    console.log("WARN: location " + someTitle + " does not have a 4Square image");
     return;
   }
   var idx = locations.findIndex(function(local) {
@@ -71,7 +75,8 @@ function updateLocationWithImg(someTitle,someImgUrl) {
                                     '<img src="' + someImgUrl + '">' + '</div>' +
                                     '<footer>foursquare image</footer>';
   }
-  console.log(locations[idx].displayContent);
+  console.log("INFO: " + someTitle + " updated with display content - \n" +
+              locations[idx].displayContent);
 }
 
 function makeFourSquareImg(latLong, title) {
@@ -86,16 +91,17 @@ function makeFourSquareImg(latLong, title) {
                        "&ll=" +
                        llString +
                        "&v=20171218&limit=1";
-  console.log("INFO: Making FourSquare requests for " + title);
-  console.log(foursquare_url);
+  console.log("INFO: Making 4Square requests for " + title);
+  // console.log(foursquare_url);
 
   $.getJSON(foursquare_url,function(venueData) {
     if(venueData.meta.code != '200') {
-      console.log("ERROR: FourSquare failed to get venue " + title);
+      console.log("ERROR: 4Square failed to get venue " + title);
       return;
     }
     var locID = venueData.response.venues[0].id;
-    console.log("INFO: FourSquare got the location " + locID);
+    console.log("INFO: 4Square got the location \n" + title +
+                "\n" + locID);
     var photosUrl = "https://api.foursquare.com/v2/venues/" +
                     locID +
                     "/photos?" +
@@ -106,11 +112,12 @@ function makeFourSquareImg(latLong, title) {
                     "&v=20171218&limit=1";
     $.getJSON(photosUrl, function(photoData) {
       if(photoData.meta.code != '200') {
-        console.log("ERROR: FourSquare failed to get photo for venue " + title);
+        console.log("ERROR: 4Square failed to get photo for venue " + title);
         return;
       }
-      console.log("INFO: FourSquare got the photo for " + locID);
-      console.log(photoData);
+      console.log("INFO: 4Square got the photo for \n" + title +
+                  "\n" + locID);
+      // console.log(photoData);
       var imgUrl = "";
       if(photoData.response.photos.count != 0) {
         imgUrl = photoData.response.photos.items[0].prefix +
@@ -118,7 +125,6 @@ function makeFourSquareImg(latLong, title) {
                  photoData.response.photos.items[0].suffix;
       }
       updateLocationWithImg(title,imgUrl);
-      console.log(imgUrl);
     });
   });
 
@@ -134,6 +140,7 @@ function makeFourSquareImg(latLong, title) {
  */
 function populateLocationsAndMarkers(map) {
   var largeInfowindow = new google.maps.InfoWindow();
+  // can I set the location here and use it below?
   filters.forEach(function(filter) {
     if (filter == "All Locations") {
       return;
@@ -152,7 +159,7 @@ function populateLocationsAndMarkers(map) {
     var service = new google.maps.places.PlacesService(map);
     service.nearbySearch(request, function(results, status) {
       if (status == 'OK') {
-        console.log("INFO: Places API succeeded for " + filter);
+        console.log("INFO: Google Places API succeeded for " + filter);
         for (var ii = 0; ii < results.length; ii++) {
           if (ii > 4) {
             // only handle at most the first 5 entries
@@ -163,8 +170,7 @@ function populateLocationsAndMarkers(map) {
           if (locations.find(function(currentValue) {
             return currentValue.place.name == this;
           }, results[ii].name)) {
-            console.log("WARN: " + results[ii].name +
-                        " already exists in locations");
+            console.log("WARN: " + results[ii].name + " already exists in locations");
             continue;
           }
           // Get the position from the location array.
@@ -240,12 +246,13 @@ function populateLocationsAndMarkers(map) {
             displayContent: defaultDisplayContent
           };
           locations.push(locObj);
+          console.log("INFO: " + locObj.place.name + " added to locations");
           makeFourSquareImg(position, title);
         }
         myModel.viewablePlaces(locations);
       } else {
-        console.log("ERR: Places API call failed for " + filter + " filter");
-        console.log(status);
+        console.log("ERROR: Google Places API call failed for " + filter + " filter");
+        console.log("ERROR: " + status);
       }
     });
   });
@@ -268,6 +275,9 @@ function geocodeBaseCity(address, map) {
     if (status == 'OK') {
       latLong = results[0].geometry.location;
       map.setCenter(latLong);
+    }
+    else {
+      console.log("ERROR: Google Geocoder API failed for " + address);
     }
   });
 }
@@ -335,11 +345,12 @@ function initMap() {
 };
 
 /**
- * handleGoogleError -
- * A function to handle the error condition for the async call to the
- * Google Maps API.
+ * [gm_authFailure description]
+ * Global function that is called by default by the Google Maps API when it
+ * encounters a failure.
  */
-function handleGoogleError() {
+function gm_authFailure() {
   // update the map div with content that indicates an error ocurred
-  console.log("ERR: Google maps API call failed");
+  console.log("ERROR: Google maps API call failed");
+  alert("Google Maps API failed.\nPlease check your connection and refresh the page.")
 }

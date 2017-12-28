@@ -53,7 +53,7 @@ var locations = [];
  * @return {Array} an Array of filtered locations
  */
 function getLocations(someFilter) {
-  console.log("Filter All locations for " + someFilter);
+  console.log("INFO: Filter All locations for " + someFilter);
   var filtered;
   if (someFilter == "All Locations") {
     filtered = locations;
@@ -62,7 +62,6 @@ function getLocations(someFilter) {
       return local.type == someFilter;
     });
   }
-  console.log(filtered);
   return filtered;
 }
 
@@ -114,7 +113,7 @@ var ViewModel = function() {
   self.viewablePlaces = ko.observableArray();
 
   self.updatePlaces = ko.computed(function() {
-    console.log("Updating viewable places")
+    console.log("INFO: Updating viewable places")
     var list = getLocations(this.selectedFilter());
     self.viewablePlaces(list);
     clearAllMarkersFromView();
@@ -122,9 +121,7 @@ var ViewModel = function() {
   }, self);
 
   self.toggleMarkerWindow = function(object) {
-    console.log("clicking")
-    console.log(object.place.name)
-    console.log(object);
+    console.log("INFO: " + object.place.name + " selected");
     google.maps.event.trigger(object.marker, 'click');
   };
 };
