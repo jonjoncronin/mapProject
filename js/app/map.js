@@ -122,10 +122,6 @@ function makeFourSquareImg(latLong, title) {
   console.log("INFO: Making 4Square requests for " + title);
 
   $.getJSON(foursquare_url,function(venueData) {
-    if(venueData.meta.code != '200') {
-      console.log("ERROR: 4Square failed to get venue " + title);
-      return;
-    }
     var locID = venueData.response.venues[0].id;
     console.log("INFO: 4Square got the location \n" + title +
                 "\n" + locID);
@@ -138,10 +134,6 @@ function makeFourSquareImg(latLong, title) {
                     foursquare_client_secret +
                     "&v=20171218&limit=1";
     $.getJSON(photosUrl, function(photoData) {
-      if(photoData.meta.code != '200') {
-        console.log("ERROR: 4Square failed to get photo for venue " + title);
-        return;
-      }
       console.log("INFO: 4Square got the photo for \n" + title +
                   "\n" + locID);
       var imgUrl = "";
@@ -151,7 +143,13 @@ function makeFourSquareImg(latLong, title) {
                  photoData.response.photos.items[0].suffix;
       }
       updateLocationWithImg(title,imgUrl);
+    })
+    .fail(function (){
+      console.log("ERROR: 4Square failed to get photo for venue " + title);
     });
+  })
+  .fail(function(){
+    console.log("ERROR: 4Square failed to get venue " + title);
   });
 
 }
@@ -369,12 +367,11 @@ function initMap() {
 };
 
 /**
- * [gm_authFailure description]
- * Global function that is called by default by the Google Maps API when it
- * encounters a failure.
+ * handleGoogleMapsError description
+ * A function to handle the error conditions for the initial Google Maps API
+ * request.
  */
-function gm_authFailure() {
-  // update the map div with content that indicates an error ocurred
+function handleGoogleMapsError() {
   console.log("ERROR: Google maps API call failed");
   alert("Google Maps API failed.\n" +
         "Please check your connection and refresh the page.");
