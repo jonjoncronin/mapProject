@@ -228,8 +228,14 @@ defines the style that User sees.
 
 # Usage
 This Single Page Application can be deployed very simply on any web server.
-Copy the entirety of the repo and the directory structure to the root directory
-that the web server expects to serve to HTTP port 80 page requests. As the
-JavaScript to handle dynamic rendering of content and responding to User input
-is all included in the folders of the repo, a User only needs to be using a
-web browser that supports JavaScript.
+Pull the entirety of the repo and the directory structure to the root directory
+that the web server expects to serve to HTTP port 80 page requests. Typically
+index.html is the default home page that a web server will render/return for a
+the top level URL that a User may attempt to browse to. As the JavaScript to
+handle dynamic rendering of content and responding to User input is all included
+in the folders of the repo, a User only needs to be using a web browser that
+supports JavaScript.
+
+Additionally if one wanted to sample and open the app locally you could pull the
+entirety of the repo to your local machine and open the index.html with your
+favorite browser.
