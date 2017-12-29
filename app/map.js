@@ -62,9 +62,23 @@ function makeMarkerIcon(markerColor) {
   return markerImage;
 }
 
+/**
+ * updateLocationWithImg -
+ * A function that updates a location in the locations array with a given URL
+ * for a photo of that location of some sort. The updated field of the location
+ * object is the "displayContent" field which is the block of HTML that is
+ * embedded in the Google InfoWindow of the Google Marker associated with
+ * each location on the map.
+ * @param  {String} someTitle  The title of the location/place in the locations
+ *                             array that needs to be updated.
+ * @param  {String} someImgUrl The URL of the image to be used in the
+ *                             displayContent of the location object associated
+ *                             with "someTitle" found in the locations array.
+ */
 function updateLocationWithImg(someTitle,someImgUrl) {
   if(!someImgUrl) {
-    console.log("WARN: location " + someTitle + " does not have a 4Square image");
+    console.log("WARN: location " + someTitle +
+                " does not have a 4Square image");
     return;
   }
   var idx = locations.findIndex(function(local) {
@@ -72,16 +86,30 @@ function updateLocationWithImg(someTitle,someImgUrl) {
   });
   if(idx) {
     locations[idx].displayContent = '<div><h3>' + someTitle + '</h3>' +
-                                    '<img src="' + someImgUrl + '">' + '</div>' +
+                                    '<img src="' + someImgUrl + '">' +
+                                    '</div>' +
                                     '<footer>foursquare image</footer>';
   }
   console.log("INFO: " + someTitle + " updated with display content - \n" +
               locations[idx].displayContent);
 }
 
+/**
+ * makeFourSquareImg -
+ * A function that will make Jquery API calls to create HTTP get requests to
+ * the FourSquare API Search and Photos Endpoints. This API is used to populate
+ * the photo that is used in the Google InfoWindow for a marker being displayed
+ * for a specific location on the map. Ultimately this function will update the
+ * locations array items with the URL for the photo if one is found.
+ * @param  {Google LatLng} latLong the Google LatLng object for a specific
+ *                                 location.
+ * @param  {String} title   the title/name of the location being searched for.
+ */
 function makeFourSquareImg(latLong, title) {
-  var foursquare_client_id = "XSB01FC3WW2BE1VJQTTDNI2GS04HTFTG5OVKWJC5BNDEJWC5";
-  var foursquare_client_secret = "HJUFYYZCGR00V3IA34BT2NPYPJKRMQWKXSJUUDSMTN5X1HA3";
+  var foursquare_client_id =
+                        "XSB01FC3WW2BE1VJQTTDNI2GS04HTFTG5OVKWJC5BNDEJWC5";
+  var foursquare_client_secret =
+                        "HJUFYYZCGR00V3IA34BT2NPYPJKRMQWKXSJUUDSMTN5X1HA3";
   var llString = latLong.toUrlValue();
   var foursquare_url = "https://api.foursquare.com/v2/venues/search?" +
                        "&client_id=" +
@@ -92,7 +120,6 @@ function makeFourSquareImg(latLong, title) {
                        llString +
                        "&v=20171218&limit=1";
   console.log("INFO: Making 4Square requests for " + title);
-  // console.log(foursquare_url);
 
   $.getJSON(foursquare_url,function(venueData) {
     if(venueData.meta.code != '200') {
@@ -117,7 +144,6 @@ function makeFourSquareImg(latLong, title) {
       }
       console.log("INFO: 4Square got the photo for \n" + title +
                   "\n" + locID);
-      // console.log(photoData);
       var imgUrl = "";
       if(photoData.response.photos.count != 0) {
         imgUrl = photoData.response.photos.items[0].prefix +
@@ -140,7 +166,6 @@ function makeFourSquareImg(latLong, title) {
  */
 function populateLocationsAndMarkers(map) {
   var largeInfowindow = new google.maps.InfoWindow();
-  // can I set the location here and use it below?
   filters.forEach(function(filter) {
     if (filter == "All Locations") {
       return;
@@ -154,7 +179,6 @@ function populateLocationsAndMarkers(map) {
       radius: '8000',
       keyword: filter
     };
-    // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=38.7907339,-121.23578279999998&radius=8000&keyword=Golf%20Course,Donuts,Parks&key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w
 
     var service = new google.maps.places.PlacesService(map);
     service.nearbySearch(request, function(results, status) {
@@ -165,7 +189,6 @@ function populateLocationsAndMarkers(map) {
             // only handle at most the first 5 entries
             break;
           }
-          // console.log(results[ii]);
           // check to see if the place already exists in the locations array
           if (locations.find(function(currentValue) {
             return currentValue.place.name == this;
@@ -185,27 +208,27 @@ function populateLocationsAndMarkers(map) {
             case "Golf Courses":
               defaultIcon = makeMarkerIcon('000099');
               defaultDisplayContent = '<div><h3>' + title + '</h3>' +
-                                      '<img style="width:100px" src="media/defaultPark.jpeg"></div>'
+                  '<img style="width:100px" src="media/defaultPark.jpeg"></div>'
               break;
             case "Donuts":
               defaultIcon = makeMarkerIcon('ff4d94');
               defaultDisplayContent = '<div><h3>' + title + '</h3>' +
-                                      '<img style="width:100px" src="media/defaultFood.png"></div>'
+                  '<img style="width:100px" src="media/defaultFood.png"></div>'
               break;
             case "Breweries":
               defaultIcon = makeMarkerIcon('663300');
               defaultDisplayContent = '<div><h3>' + title + '</h3>' +
-                                      '<img style="width:100px" src="media/defaultFood.png"></div>'
+                  '<img style="width:100px" src="media/defaultFood.png"></div>'
               break;
             case "Mexican Restaurants":
               defaultIcon = makeMarkerIcon('ff9900');
               defaultDisplayContent = '<div><h3>' + title + '</h3>' +
-                                      '<img style="width:100px" src="media/defaultFood.png"></div>'
+                  '<img style="width:100px" src="media/defaultFood.png"></div>'
               break;
             case "Parks":
               defaultIcon = makeMarkerIcon('33cc33');
               defaultDisplayContent = '<div><h3>' + title + '</h3>' +
-                                      '<img style="width:100px" src="media/defaultPark.jpeg"></div>'
+                  '<img style="width:100px" src="media/defaultPark.jpeg"></div>'
               break;
           }
 
@@ -251,7 +274,8 @@ function populateLocationsAndMarkers(map) {
         }
         myModel.viewablePlaces(locations);
       } else {
-        console.log("ERROR: Google Places API call failed for " + filter + " filter");
+        console.log("ERROR: Google Places API call failed for " + filter +
+                    " filter");
         console.log("ERROR: " + status);
       }
     });
@@ -352,5 +376,6 @@ function initMap() {
 function gm_authFailure() {
   // update the map div with content that indicates an error ocurred
   console.log("ERROR: Google maps API call failed");
-  alert("Google Maps API failed.\nPlease check your connection and refresh the page.")
+  alert("Google Maps API failed.\n" +
+        "Please check your connection and refresh the page.");
 }
