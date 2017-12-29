@@ -14,7 +14,6 @@
         rel="stylesheet">
   <link rel="stylesheet"
         href="css/main.css" />
-  <script src="js/lib/jquery-3.2.1.min.js"></script>
 </head>
 
 <body>
@@ -27,7 +26,7 @@
              class="w3-animate-opacity w3-left w3-hide-large">
           <button id="menuToggleButton"
                   class="w3-button w3-large relaxed"
-                  onclick="toggleMenu()">
+                  data-bind="click: toggleMenu">
             &#9776;
           </button>
         </div>
@@ -42,7 +41,8 @@
       <nav id="sideMenu"
            class="w3-sidebar w3-bar-block w3-collapse w3-card-2 w3-col s11 m11 l2 w3-bar-block w3-light-gray">
         <button class="w3-bar-item w3-button w3-hide-large relaxed"
-                onclick="toggleMenu()">Close &times;
+                data-bind="click: toggleMenu">
+          Close &times;
         </button>
         <select class="w3-select" name="filter" data-bind="options: filterList, value: selectedFilter">
         </select>
@@ -64,25 +64,13 @@
     </div>
   </main>
 
+  <script src="js/lib/jquery-3.2.1.min.js"></script>
   <script src="js/app/map.js"></script>
   <script src="js/lib/knockout-3.4.2.js"></script>
   <script src="js/app/app.js"></script>
   <script async
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7BeZzJ399x-LKV992YOwhDThBcRKkx1w&libraries=places&callback=initMap">
   </script>
-  <script>
-    function toggleMenu() {
-      var panel = document.getElementById("sideMenu");
-      if (panel.style.display == "block") {
-        panel.style.display = "none";
-        panel.className = panel.className.replace(" w3-animate-left", "")
-      } else {
-        panel.className += " w3-animate-left"
-        panel.style.display = "block";
-      }
-    }
-  </script>
-
 </body>
 
 </html>

@@ -111,7 +111,6 @@ var ViewModel = function() {
   self.filterList = ko.observableArray(filters);
   self.selectedFilter = ko.observable();
   self.viewablePlaces = ko.observableArray();
-
   self.updatePlaces = ko.computed(function() {
     console.log("INFO: Updating viewable places")
     var list = getLocations(this.selectedFilter());
@@ -123,6 +122,18 @@ var ViewModel = function() {
   self.toggleMarkerWindow = function(object) {
     console.log("INFO: " + object.place.name + " selected");
     google.maps.event.trigger(object.marker, 'click');
+  };
+
+  self.toggleMenu = function(object) {
+    console.log("INFO: SideMenu toggled");
+    var panel = document.getElementById("sideMenu");
+    if (panel.style.display == "block") {
+      panel.style.display = "none";
+      panel.className = panel.className.replace(" w3-animate-left", "")
+    } else {
+      panel.className += " w3-animate-left"
+      panel.style.display = "block";
+    }
   };
 };
 
