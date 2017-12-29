@@ -21,7 +21,7 @@ var defaultMapCenter = "Rocklin, CA";
 function clearAllMarkersFromView() {
   console.log("INFO: Clearing all markers from view");
   locations.forEach(function(place) {
-    place.marker.setMap(null);
+    place.marker.setVisible(false);
   }, self);
 }
 
@@ -36,7 +36,7 @@ function updateMarkerViewability(someFilter) {
   console.log("INFO: setting markers for " + someFilter + " filter");
   locations.forEach(function(place) {
     if (place.type == someFilter || someFilter == "All Locations") {
-      place.marker.setMap(map);
+      place.marker.setVisible(true);
     }
   }, self);
 }
