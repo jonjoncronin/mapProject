@@ -9,7 +9,7 @@
 "use strict";
 
 var map;
-
+var FourSquareError = false;
 // expected latLong for Rocklin is lat: 38.7907339, long: -121.23578279999998
 var defaultMapCenter = "Rocklin, CA";
 
@@ -145,10 +145,26 @@ function makeFourSquareImg(latLong, title) {
       updateLocationWithImg(title,imgUrl);
     })
     .fail(function (){
+      if(!FourSquareError) {
+      // We've failed but we don't want to create a cascade of alerts to the
+      // User. Use the global FourSquareError variable to catch the first
+      // failure and alert on that instance only.
+        alert("FourSquare Photos API failed.\n" +
+              "Please check your connection and refresh the page.");
+        FourSquareError = true;
+      }
       console.log("ERROR: 4Square failed to get photo for venue " + title);
     });
   })
   .fail(function(){
+    if(!FourSquareError) {
+      // We've failed but we don't want to create a cascade of alerts to the
+      // User. Use the global FourSquareError variable to catch the first
+      // failure and alert on that instance only.
+      alert("FourSquare Venues API failed.\n" +
+            "Please check your connection and refresh the page.");
+      FourSquareError = true;
+    }
     console.log("ERROR: 4Square failed to get venue " + title);
   });
 
